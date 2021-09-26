@@ -1,10 +1,20 @@
-from flask import Flask, request
 import requests
+import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from flask import Flask, request
 
 app = Flask(__name__)
+
+def getDriver():
+  options = webdriver.ChromeOptions()
+  options.add_argument("--headless")
+  options.add_argument("--disable-dev-shm-usage")
+  options.add_argument("--no-sandbox")
+  options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+  driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=options)
+  return driver
 
 @app.route("/search")
 def getList():
@@ -16,10 +26,8 @@ def getList():
     }
 
   url = f'https://www.cifraclub.com.br/?q={search}'
-  option = Options()
-  option.headless = True
-  driver = webdriver.Firefox(options=option)
 
+  driver = getDriver()
   driver.get(url)
   table = driver.find_element_by_css_selector('div.gsc-expansionArea')
   html_content = table.get_attribute('outerHTML')
@@ -54,10 +62,7 @@ def getMusic():
       "error": "Falta o link da música"
     }
 
-  option = Options()
-  option.headless = True
-  driver = webdriver.Firefox(options=option)
-
+  driver = getDriver()
   driver.get(url)
   table = driver.find_element_by_css_selector('div.cifra')
   html_content = table.get_attribute('outerHTML')
