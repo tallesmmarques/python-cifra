@@ -4,8 +4,11 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def getDriver():
   options = webdriver.ChromeOptions()
@@ -17,6 +20,7 @@ def getDriver():
   return driver
 
 @app.route("/search")
+@cross_origin()
 def getList():
   # -------------------------- Requisição do CifraClub ------------------------- #
   search = request.args.get('q')
@@ -54,6 +58,7 @@ def getList():
   }
 
 @app.route("/getmusic")
+@cross_origin()
 def getMusic():
   # -------------------------- Requisição do CifraClub ------------------------- #
   url = request.args.get('link')
