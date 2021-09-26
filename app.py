@@ -43,7 +43,7 @@ def getList():
   results = soup.find_all('div', class_='gsc-table-result')
 
   data = []
-  for i, result in enumerate(results):
+  for i, result in enumerate(results, 1):
     cell = result.find('a')
     if "(letra da música)" in cell.text:
       continue
